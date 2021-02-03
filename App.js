@@ -1,12 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Nonogram from './components/Nonogram';
+import Game from './components/game';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Nonogram />
+      <Game />
     </View>
   );
 }
