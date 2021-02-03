@@ -69,7 +69,7 @@ function HintNumbers(props) {
 
   return (
 
-    <View style={props.area == 'left' ? styles.leftHintContainer : styles.rigthHintContainer}>
+    <View style={props.area == 'left' ? styles.leftHintContainer : styles.topHintContainer}>
       {hintNumbers}
     </View>
   );
@@ -327,7 +327,6 @@ class Game extends React.Component {
    * @param {Number} loc Index of the square being clicked.
    */
   squareClick(event, loc) {
-    console.log('click')
     const current = this.state.current;
     const squares = current.slice();
     let lMouseDown = this.state.lMouseDown;
@@ -336,12 +335,10 @@ class Game extends React.Component {
     let currentAction = this.state.currentAction;
     let changed = this.state.changed;
 
-      lMouseDown = true;
-      currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.FILLED : SquareValue.EMPTY;
-      squares[loc] = currentAction;
-      changed = true;
-    
-      console.log(squares)
+    lMouseDown = true;
+    currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.FILLED : SquareValue.EMPTY;
+    squares[loc] = currentAction;
+    changed = true;
 
     this.setState({
       current: squares,
@@ -456,6 +453,7 @@ class Game extends React.Component {
    * in front of the current action in the action history.
    */
   undoAction() {
+    console.log('undo')
     const stepNumber = this.state.stepNumber;
 
     if (!stepNumber) return;
@@ -561,7 +559,7 @@ class Game extends React.Component {
               type='col'
             />
           </View>
-          <View className="lower-board">
+          <View style={{display: 'flex', flexDirection: 'row'}} className="lower-board">
             <HintNumbers
               currentHints={this.state.currentHints.rows}
               goalHints={this.state.goalHints.rows}

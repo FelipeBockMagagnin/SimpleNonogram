@@ -30,46 +30,50 @@ const styles = StyleSheet.create({
   width: 250,
   height: 250
 },
-
 hint: {
-  margin: 4
+  flex: 1, margin: 10, marginVertical: 10, padding: 10
   //transition: color 0.2s ease 0s,
 },
 rowHint: {
   color: 'white',
   fontSize: 16,
   fontWeight: '700',
-  margin: 4
-  //-webkit-box-pack: end,
-  //grid-auto-flow: column,
+  margin: 4,
+  marginVertical: 14,
 },
 colHints: {
   color: 'blue',
   fontSize: 16,
   fontWeight: '700',
-  margin: 4
-  //-webkit-box-pack: end,
-  //grid-auto-flow: column,
+  margin: 4,
+  marginHorizontal: 16,
+  display: 'flex',
+  flexDirection: 'row',
+
 },
 crossout: {
   color: '#666'
 },
 leftHintContainer: {
+  width: 40,
+  height: 250,
   alignItems: 'center',
   display: 'flex',
-  flexDirection: 'row',
-  alignSelf: 'flex-end',
-  alignItems: 'flex-end',
-  justifyContent: 'flex-end',
-  marginBottom: 20,
-},
-rigthHintContainer: {
   flexDirection: 'column',
-  alignItems: 'center',
+  alignSelf: 'center',
+  alignItems: 'flex-end',
+  justifyContent: 'center',
+  backgroundColor: 'blue'
+},
+topHintContainer: {
   display: 'flex',
-  alignSelf: 'flex-start',
-  alignItems: 'flex-start',
-  marginBottom: 20,
+  marginLeft: 40,
+  width: 250,
+  flexDirection: 'row',
+  alignItems: 'stretch',
+  alignSelf: 'center',
+  justifyContent: 'center',
+  backgroundColor: 'red'
 },
 game: {
   backgroundColor: '#282c34',
