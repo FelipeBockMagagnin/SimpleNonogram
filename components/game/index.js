@@ -56,19 +56,20 @@ function HintNumbers(props) {
 
     for (let b = 0; b < props.goalHints[a].length; b++) {
       if (typeof props.currentHints[a][currentIt] !== 'undefined' &&
-          props.currentHints[a][currentIt] === props.goalHints[a][b]) {
+        props.currentHints[a][currentIt] === props.goalHints[a][b]) {
         currentIt++;
-        aSection.push(<Text style={styles.hint} className="hint crossout">{props.goalHints[a][b]}</Text>);
+        aSection.push(<Text style={[styles.hint, styles.crossout]} className="hint crossout">{props.goalHints[a][b]}</Text>);
       } else {
         aSection.push(<Text style={styles.hint} className="hint">{props.goalHints[a][b]}</Text>);
       }
     }
 
-    hintNumbers.push(<Text style={styles.hint} className={"hint-" + props.type}>{aSection}</Text>);
+    hintNumbers.push(<Text style={props.type == 'col' ? styles.colHints : styles.rowHint}>{aSection}</Text>);
   }
 
   return (
-    <View className={props.area + '-hints'}>
+
+    <View style={props.area == 'left' ? styles.leftHintContainer : styles.rigthHintContainer}>
       {hintNumbers}
     </View>
   );
@@ -85,12 +86,12 @@ function Square(props) {
 
   return (
     <View
-      style={styles.square}
+      style={(value == 'empty') ? [styles.square, styles.squareEmpty] : [styles.square, styles.squareFilled]}
       //className={'square square-' + value}
-      onTouchStart={props.onMouseDown}
+      onTouchStart={props.onTouchStart}
       onTouchMove={props.onMouseEnter}
-    > 
-      <Text className="material-icons">cancel</Text>
+    >
+      <Text className="material-icons"></Text>
     </View>
   );
 }
@@ -103,7 +104,7 @@ class Board extends React.Component {
     return (
       <Square
         value={this.props.squares[loc]}
-        onMouseDown={(event) => this.props.onMouseDown(event, loc)}
+        onTouchStart={(event) => this.props.onTouchStart(event, loc)}
         onMouseEnter={() => this.props.onMouseEnter(loc)}
       />
     );
@@ -124,9 +125,9 @@ class Board extends React.Component {
     const rows = [];
     for (let row = 0; row < this.props.dimensions.rows; row++) {
       rows.push(
-        <View 
+        <View
           style={styles.boardRow}
-          //className="board-row"
+        //className="board-row"
         >
           {cols[row]}
         </View>
@@ -134,7 +135,7 @@ class Board extends React.Component {
     }
     return (
       <View
-      style={styles.gameBoard}
+        style={styles.gameBoard}
       //className="game-board"
       >
         {rows}
@@ -230,7 +231,7 @@ class Game extends React.Component {
     for (let i = 0; i < size; i++) {
       winSquares.push((Math.random() < 0.5) ? SquareValue.EMPTY : SquareValue.FILLED);
     }
-    
+
     this.setState({
       goalHints: this.getHintNumbers(winSquares),
     });
@@ -326,6 +327,7 @@ class Game extends React.Component {
    * @param {Number} loc Index of the square being clicked.
    */
   squareClick(event, loc) {
+    console.log('click')
     const current = this.state.current;
     const squares = current.slice();
     let lMouseDown = this.state.lMouseDown;
@@ -334,23 +336,13 @@ class Game extends React.Component {
     let currentAction = this.state.currentAction;
     let changed = this.state.changed;
 
-    if (event.button === 0) {
-      if (event.type === "mousedown") {
-        lMouseDown = true;
-        currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.FILLED : SquareValue.EMPTY;
-        squares[loc] = currentAction;
-        changed = true;
-      }
-    } else if (event.button === 2) {
-      if (event.type === "mousedown") {
-        rMouseDown = true;
-        currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.MARKED : SquareValue.EMPTY;
-        squares[loc] = currentAction;
-        changed = true;
-      }
-    } else {
-      return;
-    }
+      lMouseDown = true;
+      currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.FILLED : SquareValue.EMPTY;
+      squares[loc] = currentAction;
+      changed = true;
+    
+      console.log(squares)
+
     this.setState({
       current: squares,
       lMouseDown: lMouseDown,
@@ -376,7 +368,7 @@ class Game extends React.Component {
     let lMouseDown = this.state.lMouseDown;
     let rMouseDown = this.state.rMouseDown;
     let changed = this.state.changed;
-    
+
     if (!lMouseDown && !rMouseDown) return;
 
     const current = this.state.current;
@@ -390,7 +382,7 @@ class Game extends React.Component {
     } else {
       return;
     }
-    
+
     this.setState({
       current: squares,
       changed: changed,
@@ -411,7 +403,7 @@ class Game extends React.Component {
       let rowHints = [];
       let num = 0;
 
-      for ( let col = 0; col < dimensions.cols; col++) {
+      for (let col = 0; col < dimensions.cols; col++) {
         if (squares[this.getSquareIndex(row, col)] === SquareValue.FILLED) num++;
         else if (num) {
           rowHints.push(num);
@@ -427,7 +419,7 @@ class Game extends React.Component {
       let colHints = [];
       let num = 0;
 
-      for ( let row = 0; row < dimensions.rows; row++) {
+      for (let row = 0; row < dimensions.rows; row++) {
         if (squares[this.getSquareIndex(row, col)] === SquareValue.FILLED) num++;
         else if (num) {
           colHints.push(num);
@@ -547,19 +539,18 @@ class Game extends React.Component {
     });
     */
 
-   const current = this.state.current;
+    const current = this.state.current;
 
     return (
       <View
+        style={styles.game}
         className="game"
-        onContextMenu={(e)=> e.preventDefault()}
+        onContextMenu={(e) => e.preventDefault()}
         onMouseUp={() => this.appendHistory()}
       >
-        <View className="left-panel">
-          <View className="game-info">
-            <Text>{this.state.timer}</Text>
-            <Text>{(this.winCheck()) ? 'You won!' : ''}</Text>
-          </View>
+        <View style={styles.gameInfo}>
+          <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>{this.state.timer}</Text>
+          <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>{(this.winCheck()) ? 'You won!' : ''}</Text>
         </View>
         <View className="right-panel">
           <View className="upper-board">
@@ -580,7 +571,7 @@ class Game extends React.Component {
             <Board
               squares={current}
               dimensions={this.state.dimensions}
-              onMouseDown={(event, loc) => this.squareClick(event, loc)}
+              onTouchStart={(event, loc) => this.squareClick(event, loc)}
               onMouseEnter={loc => this.squareHover(loc)}
             />
           </View>
@@ -588,7 +579,7 @@ class Game extends React.Component {
             <Button className="material-icons" title='undo' onPress={() => this.undoAction()}></Button>
             <Button className="material-icons" title='redo' onPress={() => this.redoAction()}></Button>
             <Button className="material-icons" title='replay' onPress={() => this.restart()}></Button>
-            <DimensionChoices/>
+            <DimensionChoices />
           </View>
         </View>
       </View>
