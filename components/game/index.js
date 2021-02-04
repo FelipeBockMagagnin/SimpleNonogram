@@ -1,7 +1,9 @@
 import React from "react";
 import { DefaultDimensions, SquareValue, DimensionsChoices } from "./constants.js";
 import styles from "./styles.js";
-import { Picker, View, Text, Button } from 'react-native'
+import { Picker, View, Text, Button, TouchableOpacity } from 'react-native'
+import { Feather } from '@expo/vector-icons'; 
+
 
 /**
  * A basic class containing the structure that makes up the hint
@@ -579,11 +581,20 @@ class Game extends React.Component {
               onTouchMove={loc => this.squareHover(loc)}
             />
           </View>
-          <View className="undo-redo">
-            <Button className="material-icons" title='undo' onPress={() => this.undoAction()}></Button>
-            <Button className="material-icons" title='redo' onPress={() => this.redoAction()}></Button>
-            <Button className="material-icons" title='replay' onPress={() => this.restart()}></Button>
-            <DimensionChoices />
+          <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 10}}>
+            <TouchableOpacity style={{margin: 20}} title='undo' onPress={() => this.undoAction()}>
+              <Feather name="corner-up-left" size={40} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={{margin: 20}} title='redo' onPress={() => this.redoAction()}>
+              <Feather name="corner-up-right" size={40} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={{margin: 20}} title='replay' onPress={() => this.restart()}>
+              <Feather name="repeat" size={40} color="white" />
+            </TouchableOpacity>
+          </View>
+
+          <View>
+          <DimensionChoices />
           </View>
         </View>
       </View>

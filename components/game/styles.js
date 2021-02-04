@@ -48,20 +48,21 @@ rowHint: {
   fontSize: 16,
   fontWeight: '700',
   margin: 4,
-  marginVertical: 14,
+  marginVertical: 20,
 },
 colHints: {
   color: 'white',
   fontSize: 16,
   fontWeight: '700',
   margin: 4,
-  marginHorizontal: 16,
+  marginHorizontal: 20,
   display: 'flex',
   flexDirection: 'row',
   flexWrap: 'wrap'
 },
 crossout: {
-  color: '#666'
+  color: '#666',
+  margin: 5,
 },
 leftHintContainer: {
   width: leftHintsWidth,
