@@ -1,19 +1,28 @@
 import { StyleSheet, Dimensions } from 'react-native'
 
+
+const gameDimension = 5;
+const leftHintsWidth = 60;
+
+const gameWidth = Dimensions.get('window').width - leftHintsWidth - 20;
+const gameHeight = gameWidth;
+
+console.log(gameWidth);
+
+const squareHeight = (gameWidth / gameDimension) - gameDimension * 1.1;
+const squareWidth = squareHeight;
+
+
 const styles = StyleSheet.create({
   square: {
     position: 'relative',
     display: 'flex',
-    alignItems: "center",
+    alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 3,
-    borderRadius: 6,
-    margin: 3,
-    //float: left,
-    height: 42, //70
-    width: 42, //70
-    //cursor: pointer,
-    //transition: border 0.2s ease 0s, background-color 0.2s ease 0s,
+    borderRadius: 5,
+    margin: 2,
+    height: squareHeight,
+    width: squareWidth, 
   },
   boardRow: {
     display: 'flex',
@@ -27,12 +36,12 @@ const styles = StyleSheet.create({
   backgroundColor: '#ccc',
   borderRadius: 10,
   padding: 3,
-  width: 250,
-  height: 250
+  width: gameWidth,
+  height: gameHeight
 },
 hint: {
-  flex: 1, margin: 10, marginVertical: 10, padding: 10
-  //transition: color 0.2s ease 0s,
+  color: 'white',
+  marginVertical: 5,
 },
 rowHint: {
   color: 'white',
@@ -42,42 +51,40 @@ rowHint: {
   marginVertical: 14,
 },
 colHints: {
-  color: 'blue',
+  color: 'white',
   fontSize: 16,
   fontWeight: '700',
   margin: 4,
   marginHorizontal: 16,
   display: 'flex',
   flexDirection: 'row',
-
+  flexWrap: 'wrap'
 },
 crossout: {
   color: '#666'
 },
 leftHintContainer: {
-  width: 40,
-  height: 250,
+  width: leftHintsWidth,
+  height: gameHeight,
   alignItems: 'center',
   display: 'flex',
   flexDirection: 'column',
   alignSelf: 'center',
   alignItems: 'flex-end',
   justifyContent: 'center',
-  backgroundColor: 'blue'
 },
 topHintContainer: {
   display: 'flex',
-  marginLeft: 40,
-  width: 250,
+  marginLeft: leftHintsWidth,
+  width: gameWidth,
   flexDirection: 'row',
   alignItems: 'stretch',
   alignSelf: 'center',
   justifyContent: 'center',
-  backgroundColor: 'red'
 },
 game: {
   backgroundColor: '#282c34',
-  height: Dimensions.get('window').height, //'100vh',
+  height: Dimensions.get('window').height,
   width: Dimensions.get('window').width,
   display: 'flex',
   flexDirection: 'row',

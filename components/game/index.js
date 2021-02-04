@@ -58,9 +58,9 @@ function HintNumbers(props) {
       if (typeof props.currentHints[a][currentIt] !== 'undefined' &&
         props.currentHints[a][currentIt] === props.goalHints[a][b]) {
         currentIt++;
-        aSection.push(<Text style={[styles.hint, styles.crossout]} className="hint crossout">{props.goalHints[a][b]}</Text>);
+        aSection.push(<Text style={[styles.hint, styles.crossout]}>{props.goalHints[a][b]}</Text>);
       } else {
-        aSection.push(<Text style={styles.hint} className="hint">{props.goalHints[a][b]}</Text>);
+        aSection.push(<Text style={styles.hint}>{props.goalHints[a][b] + ' '}</Text>);
       }
     }
 
@@ -89,7 +89,7 @@ function Square(props) {
       style={(value == 'empty') ? [styles.square, styles.squareEmpty] : [styles.square, styles.squareFilled]}
       //className={'square square-' + value}
       onTouchStart={props.onTouchStart}
-      onTouchMove={props.onMouseEnter}
+      onTouchMove={props.onTouchMove}
     >
       <Text className="material-icons"></Text>
     </View>
@@ -105,7 +105,7 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[loc]}
         onTouchStart={(event) => this.props.onTouchStart(event, loc)}
-        onMouseEnter={() => this.props.onMouseEnter(loc)}
+        onTouchMove={() => this.props.onTouchMove(loc)}
       />
     );
   }
@@ -340,6 +340,12 @@ class Game extends React.Component {
     squares[loc] = currentAction;
     changed = true;
 
+    console.log('squares');
+    console.log(squares);
+
+    console.log('win squares');
+
+
     this.setState({
       current: squares,
       lMouseDown: lMouseDown,
@@ -542,9 +548,9 @@ class Game extends React.Component {
     return (
       <View
         style={styles.game}
-        className="game"
-        onContextMenu={(e) => e.preventDefault()}
-        onMouseUp={() => this.appendHistory()}
+        //className="game"
+        //onContextMenu={(e) => e.preventDefault()}
+        onTouchEnd={() => this.appendHistory()}
       >
         <View style={styles.gameInfo}>
           <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>{this.state.timer}</Text>
@@ -570,7 +576,7 @@ class Game extends React.Component {
               squares={current}
               dimensions={this.state.dimensions}
               onTouchStart={(event, loc) => this.squareClick(event, loc)}
-              onMouseEnter={loc => this.squareHover(loc)}
+              onTouchMove={loc => this.squareHover(loc)}
             />
           </View>
           <View className="undo-redo">
