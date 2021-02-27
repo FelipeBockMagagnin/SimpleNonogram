@@ -104,8 +104,8 @@ gameInfo: {
   marginRight: 20,
   color: 'white',
   position: 'absolute',
-  top: 20,
-  left: 20
+  top: 30,
+  right: 0
 },
 squareFilled: {
   backgroundColor: '#353235',

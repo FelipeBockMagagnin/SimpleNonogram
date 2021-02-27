@@ -2,6 +2,8 @@ import React from "react";
 import { DefaultDimensions, SquareValue, DimensionsChoices } from "./constants.js";
 import styles from "./styles.js";
 import { Picker, View, Text, Button, TouchableOpacity } from 'react-native'
+import CustomModal from '../../components/CustomModal'
+
 import { Feather } from '@expo/vector-icons'; 
 
 
@@ -263,6 +265,8 @@ class Game extends React.Component {
         if (this.state.goalHints.cols[a][b] !== this.state.currentHints.cols[a][b]) return false;
       }
     }
+
+
 
     return true;
   }
@@ -554,6 +558,16 @@ class Game extends React.Component {
         //onContextMenu={(e) => e.preventDefault()}
         onTouchEnd={() => this.appendHistory()}
       >
+        <CustomModal modalVisible={this.winCheck()} redirectPage='Home' navigation={this.props.navigation} modalText='Você Ganhou!' confirmText='Voltar a Home' />
+        <TouchableOpacity 
+          style={{ marginRight: 20,
+            color: 'white',
+            position: 'absolute',
+            top: 30,
+            left: 10}}
+        onPress={() => this.props.navigation.navigate('Home')}>
+          <Feather name="arrow-left" size={30} color="white" />
+        </TouchableOpacity>
         <View style={styles.gameInfo}>
           <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>{this.state.timer}</Text>
           <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>{(this.winCheck()) ? 'You won!' : ''}</Text>
@@ -593,9 +607,9 @@ class Game extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View>
+          {/* <View>
           <DimensionChoices />
-          </View>
+          </View> */}
         </View>
       </View>
     );
