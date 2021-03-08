@@ -3,6 +3,8 @@ import { DefaultDimensions, SquareValue, DimensionsChoices } from "./constants.j
 import styles from "./styles.js";
 import { Picker, View, Text, Button, TouchableOpacity } from 'react-native'
 import CustomModal from '../../components/CustomModal'
+import { StyleSheet, Dimensions } from 'react-native'
+
 
 import { Feather } from '@expo/vector-icons'; 
 
@@ -54,6 +56,10 @@ function DimensionChoices() {
 function HintNumbers(props) {
   let hintNumbers = [];
 
+  const fontSize = 120 / (props.dimensions);
+  const gameWidth = Dimensions.get('window').width - 80;
+
+
   for (let a = 0; a < props.goalHints.length; a++) {
     let aSection = [];
     let currentIt = 0;
@@ -62,18 +68,18 @@ function HintNumbers(props) {
       if (typeof props.currentHints[a][currentIt] !== 'undefined' &&
         props.currentHints[a][currentIt] === props.goalHints[a][b]) {
         currentIt++;
-        aSection.push(<Text style={[styles.hint, styles.crossout]}>{props.goalHints[a][b]}</Text>);
+        aSection.push(<Text style={[styles.hint, styles.crossout, { fontSize: fontSize }]}>{props.goalHints[a][b] + ' '}</Text>);
       } else {
-        aSection.push(<Text style={styles.hint}>{props.goalHints[a][b] + ' '}</Text>);
+        aSection.push(<Text style={[styles.hint, { fontSize: fontSize }]}>{props.goalHints[a][b] + ' '}</Text>);
       }
     }
 
-    hintNumbers.push(<Text style={props.type == 'col' ? styles.colHints : styles.rowHint}>{aSection}</Text>);
+    hintNumbers.push(<Text style={props.type == 'col' ? [styles.colHints, { width: fontSize + 1 }] : [styles.rowHint, { height: fontSize + 1 }]}>{aSection}</Text>);
   }
 
   return (
 
-    <View style={props.area == 'left' ? styles.leftHintContainer : styles.topHintContainer}>
+    <View style={props.area == 'left' ? [styles.leftHintContainer, { height: gameWidth }] : [styles.topHintContainer, { width: gameWidth}]}>
       {hintNumbers}
     </View>
   );
@@ -88,9 +94,12 @@ function Square(props) {
   const index = (typeof props.value === 'undefined') ? 1 : props.value;
   const value = SquareValue.properties[index].name;
 
+  const gameWidth = Dimensions.get('window').width - 80;
+  const squareHeight = ((gameWidth - 1)  / props.dimensions.rows) - 2;
+
   return (
     <View
-      style={(value == 'empty') ? [styles.square, styles.squareEmpty] : [styles.square, styles.squareFilled]}
+      style={(value == 'empty') ? [styles.square, styles.squareEmpty, { width: squareHeight, height: squareHeight}] : [styles.square, styles.squareFilled, { width: squareHeight, height: squareHeight}]}
       //className={'square square-' + value}
       onTouchStart={props.onTouchStart}
       onTouchMove={props.onTouchMove}
@@ -108,6 +117,7 @@ class Board extends React.Component {
     return (
       <Square
         value={this.props.squares[loc]}
+        dimensions={this.props.dimensions}
         onTouchStart={(event) => this.props.onTouchStart(event, loc)}
         onTouchMove={() => this.props.onTouchMove(loc)}
       />
@@ -137,13 +147,42 @@ class Board extends React.Component {
         </View>
       );
     }
+
+    const gameWidth = Dimensions.get('window').width - 80;
+
     return (
       <View
-        style={styles.gameBoard}
+        style={[styles.gameBoard, { width: gameWidth, height: gameWidth }]}
       //className="game-board"
       >
         {rows}
-      </View>
+
+        { 
+          this.props.dimensions.rows == 10 ? 
+          (
+            <View style={{position: 'absolute', width: gameWidth, height: gameWidth}}>
+              <View style={{position: 'absolute', left: 0, bottom: gameWidth/2, width: gameWidth, backgroundColor: '#333', height: 1}}></View>
+              <View style={{position: 'absolute', left: gameWidth/2, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1}}></View>
+            </View>
+          )
+          : null
+        }
+
+        { 
+          this.props.dimensions.rows == 15 ? 
+          (
+            <View style={{position: 'absolute', width: gameWidth, height: gameWidth}}>
+              <View style={{position: 'absolute', left: gameWidth/3, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1}}></View>
+              <View style={{position: 'absolute', left: 0, bottom: gameWidth/3, height: 1, backgroundColor: '#333', width: gameWidth}}></View>
+              <View style={{position: 'absolute', right: gameWidth/3, top: 0, height: gameWidth, backgroundColor: '#333', width: 1}}></View>
+              <View style={{position: 'absolute', right: 0, top: gameWidth/3, height: 1, backgroundColor: '#333', width: gameWidth}}></View>
+            </View>
+          )
+          : null
+        }
+
+
+        </View>
     );
   }
 }
@@ -155,12 +194,9 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     
-    
+    styles.gamed
     let rows = this.props.route.params.rows;
     let columns = this.props.route.params.columns;
-
-    console.log('row: ' + rows);
-    console.log('column: ' + columns);
 
     const nextDimensions = {
       rows: rows,
@@ -587,6 +623,7 @@ class Game extends React.Component {
             <HintNumbers
               currentHints={this.state.currentHints.cols}
               goalHints={this.state.goalHints.cols}
+              dimensions={this.props.route.params.rows}
               area='upper'
               type='col'
             />
@@ -595,6 +632,7 @@ class Game extends React.Component {
             <HintNumbers
               currentHints={this.state.currentHints.rows}
               goalHints={this.state.goalHints.rows}
+              dimensions={this.props.route.params.rows}
               area='left'
               type='row'
             />

@@ -65,7 +65,9 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('Game', { rows: 15, columns: 15 })}
+          onPress={() => { 
+            navigation.navigate('Game', { rows: 15, columns: 15 });
+          }}
         >
           <Text style={{ fontSize: 40, margin: 10, fontWeight: 'bold' }}>15x15</Text>
 

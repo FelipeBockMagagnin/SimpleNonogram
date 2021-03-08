@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 
 const CustomModal = ({modalVisible, redirectPage, navigation, modalText, confirmText}) => {
-  console.log('visibilidade da modal: ', modalVisible)
   return (
     <View style={styles.centeredView}>
       <Modal
