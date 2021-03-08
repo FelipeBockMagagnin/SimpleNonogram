@@ -154,13 +154,26 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    const size = DefaultDimensions.ROWS * DefaultDimensions.COLS;
+    
+    
+    let rows = this.props.route.params.rows;
+    let columns = this.props.route.params.columns;
+
+    console.log('row: ' + rows);
+    console.log('column: ' + columns);
+
+    const nextDimensions = {
+      rows: rows,
+      cols: columns
+    }
+
+    const size = nextDimensions.rows * nextDimensions.cols;
 
     this.state = {
       /** Number of rows and columns in game board. */
       dimensions: {
-        rows: DefaultDimensions.ROWS,
-        cols: DefaultDimensions.COLS,
+        rows: nextDimensions.rows,
+        cols: nextDimensions.cols,
       },
       /** Current board state. */
       current: Array(size).fill(SquareValue.EMPTY),
@@ -171,7 +184,7 @@ class Game extends React.Component {
       /** Index of history that we're currently at. */
       stepNumber: 0,
       /** Current hint numbers. */
-      currentHints: new Hints(Array(DefaultDimensions.ROWS).fill([0]), Array(DefaultDimensions.COLS).fill([0])),
+      currentHints: new Hints(Array(nextDimensions.rows).fill([0]), Array(nextDimensions.cols).fill([0])),
       /** Goal hint numbers. */
       goalHints: new Hints([], []),
       /** Whether or not the left mouse button is currently held down. */
@@ -499,18 +512,15 @@ class Game extends React.Component {
    * Restart with a new game board.
    */
   restart() {
+    let rows = this.props.route.params.rows;
+    let columns = this.props.route.params.columns;
 
-    //let sel = document.getElementById('dimensions-select');
-    //const index = sel.selectedIndex;
-
-    // const nextDimensions = {
-    //   rows: DimensionsChoices[index][1],
-    //   cols: DimensionsChoices[index][0]
-    // }
+    console.log('row: ' + rows);
+    console.log('column: ' + columns);
 
     const nextDimensions = {
-      rows: 5,
-      cols: 5
+      rows: rows,
+      cols: columns
     }
 
     const size = nextDimensions.rows * nextDimensions.cols;

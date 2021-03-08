@@ -1,39 +1,44 @@
 import { StyleSheet, Dimensions } from 'react-native'
 
 
-const gameDimension = 5;
+const gameDimension = 15;
 const leftHintsWidth = 60;
 
 const gameWidth = Dimensions.get('window').width - leftHintsWidth - 20;
 const gameHeight = gameWidth;
 
-console.log(gameWidth);
+console.log('width:' + gameWidth);
 
-const squareHeight = (gameWidth / gameDimension) - gameDimension * 1.1;
+const squareHeight = Math.floor(((gameWidth - gameDimension * 5) / gameDimension));
+
+console.log('squareHeight:' + squareHeight);
+
+
 const squareWidth = squareHeight;
+
+
+const fontSize = 140/gameDimension;
 
 
 const styles = StyleSheet.create({
   square: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 5,
     margin: 2,
     height: squareHeight,
-    width: squareWidth, 
+    width: squareWidth
   },
   boardRow: {
     display: 'flex',
     flexWrap: 'wrap',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   gameBoard: {
-  //display: grid,
   display: 'flex',
   flexDirection: 'column',
+  alignItems: 'center',
   backgroundColor: '#ccc',
+  justifyContent: 'center',
   borderRadius: 10,
   padding: 3,
   width: gameWidth,
@@ -45,20 +50,25 @@ hint: {
 },
 rowHint: {
   color: 'white',
-  fontSize: 16,
+  fontSize: fontSize,
   fontWeight: '700',
   margin: 4,
-  marginVertical: 20,
+  display: 'flex',
+  height: fontSize + 2,
+  flexDirection: 'column',
+  flexWrap: 'nowrap',
+
 },
 colHints: {
   color: 'white',
-  fontSize: 16,
+  fontSize: fontSize,
   fontWeight: '700',
-  margin: 4,
-  marginHorizontal: 20,
   display: 'flex',
   flexDirection: 'row',
-  flexWrap: 'wrap'
+  flexWrap: 'wrap',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: fontSize
 },
 crossout: {
   color: '#666',
@@ -70,18 +80,20 @@ leftHintContainer: {
   alignItems: 'center',
   display: 'flex',
   flexDirection: 'column',
-  alignSelf: 'center',
   alignItems: 'flex-end',
-  justifyContent: 'center',
+  flexWrap: 'nowrap',
+  justifyContent: 'space-around',
+  padding: 3,
 },
 topHintContainer: {
   display: 'flex',
   marginLeft: leftHintsWidth,
   width: gameWidth,
+  padding: 3,
   flexDirection: 'row',
-  alignItems: 'stretch',
-  alignSelf: 'center',
-  justifyContent: 'center',
+  flexWrap: 'nowrap',
+  alignItems: 'flex-end',
+  justifyContent: 'space-around',
 },
 game: {
   backgroundColor: '#282c34',

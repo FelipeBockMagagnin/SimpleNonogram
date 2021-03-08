@@ -16,7 +16,7 @@ export default function Home({ navigation }) {
       <ScrollView style={{ flex: 1, display: 'flex', flexDirection: 'row' }} horizontal={true} showsHorizontalScrollIndicator={false} >
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('Game')}
+          onPress={() => navigation.navigate('Game', { rows: 5, columns: 5 })}
         >
           <Text style={{ fontSize: 40, margin: 10, fontWeight: 'bold' }}>5x5</Text>
 
@@ -41,7 +41,7 @@ export default function Home({ navigation }) {
 
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('Game')}
+          onPress={() => navigation.navigate('Game',  { rows: 10, columns: 10 })}
         >
           <Text style={{ fontSize: 40, margin: 10, fontWeight: 'bold' }}>10x10</Text>
 
@@ -65,7 +65,7 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('Game')}
+          onPress={() => navigation.navigate('Game', { rows: 15, columns: 15 })}
         >
           <Text style={{ fontSize: 40, margin: 10, fontWeight: 'bold' }}>15x15</Text>
 
