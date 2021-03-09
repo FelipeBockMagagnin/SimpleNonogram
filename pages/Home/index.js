@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native'
 import Constants from 'expo-constants'
 import logo from '../../assets/logo.png'
 import noADS from '../../assets/noADS.png'
 import { Feather } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import CustomModal from '../../components/CustomModal'
 
 export default function Home({ navigation }) {
+
+  const [modalAboutVisible, setModalAboutVisible] = useState(false)
+
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
@@ -41,7 +45,7 @@ export default function Home({ navigation }) {
 
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('Game',  { rows: 10, columns: 10 })}
+          onPress={() => navigation.navigate('Game', { rows: 10, columns: 10 })}
         >
           <Text style={{ fontSize: 40, margin: 10, fontWeight: 'bold' }}>10x10</Text>
 
@@ -65,7 +69,7 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => { 
+          onPress={() => {
             navigation.navigate('Game', { rows: 15, columns: 15 });
           }}
         >
@@ -93,7 +97,7 @@ export default function Home({ navigation }) {
 
 
       <View style={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
-        <TouchableOpacity style={{ marginHorizontal: 20 }}>
+        <TouchableOpacity style={{ marginHorizontal: 20 }} onPress={() => setModalAboutVisible(true)}>
           <Feather name="alert-circle" size={35} color="white" />
         </TouchableOpacity>
 
@@ -105,6 +109,15 @@ export default function Home({ navigation }) {
           <Feather name="list" size={35} color="white" />
         </TouchableOpacity>
       </View>
+
+      <CustomModal
+        modalVisible={modalAboutVisible}
+        confirmText='OK'
+        modalText={'Version 1.0\nMade with love by Felipe Magagnin\nCopyright © 2021 Dotelpy. All rights reserved.'}
+        title='About'
+        redirectPage='Home'
+        setModalVisible={setModalAboutVisible}
+      />
     </View>
   )
 }
@@ -119,13 +132,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   card: {
-    width: 250, 
-    height: 150, 
-    backgroundColor: 'white', 
-    borderRadius: 10, 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    width: 250,
+    height: 150,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginHorizontal: 10
   }
 });

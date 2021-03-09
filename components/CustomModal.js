@@ -1,9 +1,8 @@
 import React from "react";
 import { Modal, StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
 
-const CustomModal = ({modalVisible, redirectPage, navigation, modalText, confirmText, title}) => {
+const CustomModal = ({modalVisible, redirectPage, navigation, modalText, confirmText, title, setModalVisible}) => {
   return (
-    <View style={styles.centeredView}>
       <Modal
         animationType='slide' 
         transparent={true}
@@ -15,14 +14,19 @@ const CustomModal = ({modalVisible, redirectPage, navigation, modalText, confirm
             <Text style={styles.modalText}>{modalText}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => navigation.navigate(redirectPage) }
+              onPress={() => {
+                if(setModalVisible != null){
+                  setModalVisible(false)
+                  return;
+                }
+                navigation.navigate(redirectPage) 
+              }}
             >
               <Text style={styles.textStyle}>{confirmText}</Text>
             </Pressable>
           </View>
         </View>
       </Modal>
-    </View>
   );
 };
 
@@ -34,10 +38,11 @@ const styles = StyleSheet.create({
     marginTop: 22
   },
   modalTitle: {
-    fontSize: 20, 
+    fontSize: 26, 
     fontWeight: '700',
     textAlign: "center",
-    color: 'white'
+    color: 'white',
+    marginBottom: 20
   },
   modalView: {
     backgroundColor: "#272b33",
@@ -57,17 +62,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
     backgroundColor: "#272b33",
-    width: Dimensions.get('window').width / 1.8
+    width: Dimensions.get('window').width / 1.8,
+    marginTop: 20,
   },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 16
   },
   modalText: {
-    marginBottom: 15,
     textAlign: 'center',
-    color: 'white'
+    color: 'white',
+    fontSize: 14
   }
 });
 
