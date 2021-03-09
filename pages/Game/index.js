@@ -1,13 +1,10 @@
 import React from "react";
-import { DefaultDimensions, SquareValue, DimensionsChoices } from "./constants.js";
+import { SquareValue } from "./constants.js";
 import styles from "./styles.js";
-import { Picker, View, Text, Button, TouchableOpacity } from 'react-native'
+import { View, Text, Button, TouchableOpacity } from 'react-native'
 import CustomModal from '../../components/CustomModal'
-import { StyleSheet, Dimensions } from 'react-native'
-
-
+import { Dimensions } from 'react-native'
 import { Feather } from '@expo/vector-icons';
-
 
 /**
  * A basic class containing the structure that makes up the hint
@@ -21,27 +18,7 @@ class Hints {
 }
 
 /**
- * Produces a dropdown selection box for user to select the dimensions
- * of the game board when it's reset next.
- * 
- * These choices are pulled from ../common/constants.js.
- */
-function DimensionChoices() {
-  let choices = [];
-
-  for (let i = 0; i < DimensionsChoices.length; i++) {
-    choices.push(<Picker.Item label={DimensionsChoices[i][0] + "x" + DimensionsChoices[i][1]}></Picker.Item>)
-  }
-
-  return (
-    <Picker>
-      {choices}
-    </Picker>
-  )
-}
-
-/**
- * Translates either row or column hint numbers into HTML View elements.
+ * Translates either row or column hint numbers into React View elements.
  * 
  * The current hint numbers according to the current state of the board
  * are compared to the static goal hint numbers in order to "cross out"
@@ -55,10 +32,8 @@ function DimensionChoices() {
  */
 function HintNumbers(props) {
   let hintNumbers = [];
-
   const fontSize = 120 / (props.dimensions);
   const gameWidth = Dimensions.get('window').width - 80;
-
 
   for (let a = 0; a < props.goalHints.length; a++) {
     let aSection = [];
@@ -78,18 +53,12 @@ function HintNumbers(props) {
   }
 
   return (
-
     <View style={props.area == 'left' ? [styles.leftHintContainer, { height: gameWidth }] : [styles.topHintContainer, { width: gameWidth }]}>
       {hintNumbers}
     </View>
   );
 }
 
-/**
- * Translates inViewidual board squares into HTML View elements.
- * 
- * @param {*} props 
- */
 function Square(props) {
   const index = (typeof props.value === 'undefined') ? 1 : props.value;
   const value = SquareValue.properties[index].name;
@@ -101,7 +70,6 @@ function Square(props) {
     return (
       <View
         style={[styles.square, styles.squareFilled, { width: squareHeight, height: squareHeight }]}
-        //className={'square square-' + value}
         onTouchStart={props.onTouchStart}
         onTouchMove={props.onTouchMove}
       >
@@ -112,7 +80,6 @@ function Square(props) {
     return (
       <View
         style={[styles.square, styles.squareMarked, { width: squareHeight, height: squareHeight }]}
-        //className={'square square-' + value}
         onTouchStart={props.onTouchStart}
         onTouchMove={props.onTouchMove}
       >
@@ -124,7 +91,6 @@ function Square(props) {
   return (
     <View
       style={[styles.square, styles.squareEmpty, { width: squareHeight, height: squareHeight }]}
-      //className={'square square-' + value}
       onTouchStart={props.onTouchStart}
       onTouchMove={props.onTouchMove}
     >
@@ -135,9 +101,6 @@ function Square(props) {
   
 }
 
-/**
- * A game board made up of squares.
- */
 class Board extends React.Component {
   renderSquare(loc) {
     return (
@@ -165,10 +128,7 @@ class Board extends React.Component {
     const rows = [];
     for (let row = 0; row < this.props.dimensions.rows; row++) {
       rows.push(
-        <View
-          style={styles.boardRow}
-        //className="board-row"
-        >
+        <View style={styles.boardRow}>
           {cols[row]}
         </View>
       );
@@ -177,15 +137,11 @@ class Board extends React.Component {
     const gameWidth = Dimensions.get('window').width - 80;
 
     return (
-      <View
-        style={[styles.gameBoard, { width: gameWidth, height: gameWidth }]}
-      //className="game-board"
-      >
+      <View style={[styles.gameBoard, { width: gameWidth, height: gameWidth }]}>
         {rows}
-
         {
-          this.props.dimensions.rows == 10 ?
-            (
+          this.props.dimensions.rows == 10 
+            ? (
               <View style={{ position: 'absolute', width: gameWidth, height: gameWidth }}>
                 <View style={{ position: 'absolute', left: 0, bottom: gameWidth / 2, width: gameWidth, backgroundColor: '#333', height: 1 }}></View>
                 <View style={{ position: 'absolute', left: gameWidth / 2, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1 }}></View>
@@ -193,10 +149,9 @@ class Board extends React.Component {
             )
             : null
         }
-
         {
-          this.props.dimensions.rows == 15 ?
-            (
+          this.props.dimensions.rows == 15 
+            ? (
               <View style={{ position: 'absolute', width: gameWidth, height: gameWidth }}>
                 <View style={{ position: 'absolute', left: gameWidth / 3, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1 }}></View>
                 <View style={{ position: 'absolute', left: 0, bottom: gameWidth / 3, height: 1, backgroundColor: '#333', width: gameWidth }}></View>
@@ -206,16 +161,11 @@ class Board extends React.Component {
             )
             : null
         }
-
-
       </View>
     );
   }
 }
 
-/**
- * The main component that is called on by ReactDOM.render().
- */
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -232,7 +182,7 @@ class Game extends React.Component {
     const size = nextDimensions.rows * nextDimensions.cols;
 
     this.state = {
-      /** Number of rows and columns in game board. */
+      /** Game Dimensions. */
       dimensions: {
         rows: nextDimensions.rows,
         cols: nextDimensions.cols,
@@ -268,10 +218,7 @@ class Game extends React.Component {
   }
 
   /**
-   * Initially called by componentDidMount().
-   * 
-   * Will be called once every 1,000 milliseconds (1 second)
-   * in order to update the in-game clock.
+   * Game Clock, stop on win
    */
   tick() {
     if (this.winCheck()) {
@@ -284,17 +231,11 @@ class Game extends React.Component {
     }));
   }
 
-  /**
-   * Called once on initial load.
-   */
   componentDidMount() {
     this.interval = setInterval(() => this.tick(), 1000);
     this.generateWinState();
   }
 
-  /**
-   * Called when component is updated.
-   */
   componentDidUpdate(prevProps, prevState) {
     if (!this.state.goalHints.rows.length) {
       this.generateWinState();
@@ -345,8 +286,6 @@ class Game extends React.Component {
         if (this.state.goalHints.cols[a][b] !== this.state.currentHints.cols[a][b]) return false;
       }
     }
-
-
 
     return true;
   }
@@ -436,7 +375,6 @@ class Game extends React.Component {
       return;
     }
 
-
     this.setState({
       current: squares,
       lMouseDown: lMouseDown,
@@ -520,7 +458,10 @@ class Game extends React.Component {
           num = 0;
         }
       }
-      if (num || !colHints.length) colHints.push(num);
+
+      if (num || !colHints.length) {
+        colHints.push(num);
+      }
       hintNumbers.cols.push(colHints);
     }
 
@@ -534,7 +475,9 @@ class Game extends React.Component {
    * @param {Number} step The index of the action state to jump to.
    */
   jumpTo(step) {
-    if (step < 0 || step >= this.state.history.length) return;
+    if (step < 0 || step >= this.state.history.length) {
+      return;
+    }
 
     this.setState({
       current: this.state.history[step].squares,
@@ -619,8 +562,6 @@ class Game extends React.Component {
     return (
       <View
         style={styles.game}
-        //className="game"
-        //onContextMenu={(e) => e.preventDefault()}
         onTouchEnd={() => this.appendHistory()}
       >
         <CustomModal
@@ -699,12 +640,7 @@ class Game extends React.Component {
                   : <Feather name="x" size={40} color="white" /> 
                 }              
             </TouchableOpacity>
-          </View>
-
-          {/* <View>
-          <DimensionChoices />
-          </View> */}
-          
+          </View>          
         </View>
       </View>
     );
