@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import { Alert, Modal, StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
 
-const CustomModal = ({modalVisible, redirectPage, navigation, modalText, confirmText}) => {
+const CustomModal = ({modalVisible, redirectPage, navigation, modalText, confirmText, title}) => {
   return (
     <View style={styles.centeredView}>
       <Modal
-        animationType="fade"
-        transparent={false}
-        visible={modalVisible} 
-        onRequestClose={() => {
-          //navigation.navigate(redirectPage)
-        }}
+        animationType='slide' 
+        transparent={true}
+        visible={modalVisible}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>{title}</Text>
             <Text style={styles.modalText}>{modalText}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -35,40 +33,41 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 22
   },
+  modalTitle: {
+    fontSize: 20, 
+    fontWeight: '700',
+    textAlign: "center",
+    color: 'white'
+  },
   modalView: {
-    margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#272b33",
     borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+    borderColor: '#fff',
+    borderWidth: 2,
+    padding: 15,
+    alignItems: "center",    
+    width: Dimensions.get('window').width / 1.2
   },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2
   },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    borderWidth: 1,
+    borderColor: 'white',
+    backgroundColor: "#272b33",
+    width: Dimensions.get('window').width / 1.8
   },
   textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
+    textAlign: 'center',
+    color: 'white'
   }
 });
 

@@ -6,7 +6,7 @@ import CustomModal from '../../components/CustomModal'
 import { StyleSheet, Dimensions } from 'react-native'
 
 
-import { Feather } from '@expo/vector-icons'; 
+import { Feather } from '@expo/vector-icons';
 
 
 /**
@@ -79,7 +79,7 @@ function HintNumbers(props) {
 
   return (
 
-    <View style={props.area == 'left' ? [styles.leftHintContainer, { height: gameWidth }] : [styles.topHintContainer, { width: gameWidth}]}>
+    <View style={props.area == 'left' ? [styles.leftHintContainer, { height: gameWidth }] : [styles.topHintContainer, { width: gameWidth }]}>
       {hintNumbers}
     </View>
   );
@@ -95,11 +95,35 @@ function Square(props) {
   const value = SquareValue.properties[index].name;
 
   const gameWidth = Dimensions.get('window').width - 80;
-  const squareHeight = ((gameWidth - 1)  / props.dimensions.rows) - 2;
+  const squareHeight = ((gameWidth - 1) / props.dimensions.rows) - 2;
+
+  if(value == 'filled'){
+    return (
+      <View
+        style={[styles.square, styles.squareFilled, { width: squareHeight, height: squareHeight }]}
+        //className={'square square-' + value}
+        onTouchStart={props.onTouchStart}
+        onTouchMove={props.onTouchMove}
+      >
+        <Text className="material-icons"></Text>
+      </View>
+    );
+  } else if(value == 'marked'){
+    return (
+      <View
+        style={[styles.square, styles.squareMarked, { width: squareHeight, height: squareHeight }]}
+        //className={'square square-' + value}
+        onTouchStart={props.onTouchStart}
+        onTouchMove={props.onTouchMove}
+      >
+        <Text className="material-icons"></Text>
+      </View>
+    );
+  } 
 
   return (
     <View
-      style={(value == 'empty') ? [styles.square, styles.squareEmpty, { width: squareHeight, height: squareHeight}] : [styles.square, styles.squareFilled, { width: squareHeight, height: squareHeight}]}
+      style={[styles.square, styles.squareEmpty, { width: squareHeight, height: squareHeight }]}
       //className={'square square-' + value}
       onTouchStart={props.onTouchStart}
       onTouchMove={props.onTouchMove}
@@ -107,6 +131,8 @@ function Square(props) {
       <Text className="material-icons"></Text>
     </View>
   );
+
+  
 }
 
 /**
@@ -157,32 +183,32 @@ class Board extends React.Component {
       >
         {rows}
 
-        { 
-          this.props.dimensions.rows == 10 ? 
-          (
-            <View style={{position: 'absolute', width: gameWidth, height: gameWidth}}>
-              <View style={{position: 'absolute', left: 0, bottom: gameWidth/2, width: gameWidth, backgroundColor: '#333', height: 1}}></View>
-              <View style={{position: 'absolute', left: gameWidth/2, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1}}></View>
-            </View>
-          )
-          : null
+        {
+          this.props.dimensions.rows == 10 ?
+            (
+              <View style={{ position: 'absolute', width: gameWidth, height: gameWidth }}>
+                <View style={{ position: 'absolute', left: 0, bottom: gameWidth / 2, width: gameWidth, backgroundColor: '#333', height: 1 }}></View>
+                <View style={{ position: 'absolute', left: gameWidth / 2, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1 }}></View>
+              </View>
+            )
+            : null
         }
 
-        { 
-          this.props.dimensions.rows == 15 ? 
-          (
-            <View style={{position: 'absolute', width: gameWidth, height: gameWidth}}>
-              <View style={{position: 'absolute', left: gameWidth/3, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1}}></View>
-              <View style={{position: 'absolute', left: 0, bottom: gameWidth/3, height: 1, backgroundColor: '#333', width: gameWidth}}></View>
-              <View style={{position: 'absolute', right: gameWidth/3, top: 0, height: gameWidth, backgroundColor: '#333', width: 1}}></View>
-              <View style={{position: 'absolute', right: 0, top: gameWidth/3, height: 1, backgroundColor: '#333', width: gameWidth}}></View>
-            </View>
-          )
-          : null
+        {
+          this.props.dimensions.rows == 15 ?
+            (
+              <View style={{ position: 'absolute', width: gameWidth, height: gameWidth }}>
+                <View style={{ position: 'absolute', left: gameWidth / 3, bottom: 0, height: gameWidth, backgroundColor: '#333', width: 1 }}></View>
+                <View style={{ position: 'absolute', left: 0, bottom: gameWidth / 3, height: 1, backgroundColor: '#333', width: gameWidth }}></View>
+                <View style={{ position: 'absolute', right: gameWidth / 3, top: 0, height: gameWidth, backgroundColor: '#333', width: 1 }}></View>
+                <View style={{ position: 'absolute', right: 0, top: gameWidth / 3, height: 1, backgroundColor: '#333', width: gameWidth }}></View>
+              </View>
+            )
+            : null
         }
 
 
-        </View>
+      </View>
     );
   }
 }
@@ -193,7 +219,7 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    
+
     styles.gamed
     let rows = this.props.route.params.rows;
     let columns = this.props.route.params.columns;
@@ -237,6 +263,7 @@ class Game extends React.Component {
       seconds: 0,
       /** A string timer keeping track of hours:minutes:seconds elapsed since board initialization. */
       timer: "00:00:00",
+      InputType: 0
     };
   }
 
@@ -247,6 +274,10 @@ class Game extends React.Component {
    * in order to update the in-game clock.
    */
   tick() {
+    if (this.winCheck()) {
+      return;
+    }
+
     this.setState(state => ({
       seconds: state.seconds + 1,
       timer: new Date(1000 * (this.state.seconds + 1)).toISOString().substr(11, 8)
@@ -282,7 +313,7 @@ class Game extends React.Component {
     let winSquares = [];
 
     for (let i = 0; i < size; i++) {
-      winSquares.push((Math.random() < 0.5) ? SquareValue.EMPTY : SquareValue.FILLED);
+      winSquares.push((Math.random() < 0.35) ? SquareValue.EMPTY : SquareValue.FILLED);
     }
 
     this.setState({
@@ -390,15 +421,20 @@ class Game extends React.Component {
     let currentAction = this.state.currentAction;
     let changed = this.state.changed;
 
-    lMouseDown = true;
-    currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.FILLED : SquareValue.EMPTY;
-    squares[loc] = currentAction;
-    changed = true;
-
-    console.log('squares');
-    console.log(squares);
-
-    console.log('win squares');
+    if (this.state.InputType === 0) {
+      lMouseDown = true;
+      currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.FILLED : SquareValue.EMPTY;
+      squares[loc] = currentAction;
+      changed = true;
+    } 
+    else if (this.state.InputType === 1) {
+      rMouseDown = true;
+      currentAction = (initialSquare === SquareValue.EMPTY) ? SquareValue.MARKED : SquareValue.EMPTY;
+      squares[loc] = currentAction;
+      changed = true;
+    } else {
+      return;
+    }
 
 
     this.setState({
@@ -514,7 +550,6 @@ class Game extends React.Component {
    * in front of the current action in the action history.
    */
   undoAction() {
-    console.log('undo')
     const stepNumber = this.state.stepNumber;
 
     if (!stepNumber) return;
@@ -551,9 +586,6 @@ class Game extends React.Component {
     let rows = this.props.route.params.rows;
     let columns = this.props.route.params.columns;
 
-    console.log('row: ' + rows);
-    console.log('column: ' + columns);
-
     const nextDimensions = {
       rows: rows,
       cols: columns
@@ -577,24 +609,11 @@ class Game extends React.Component {
       changed: false,
       seconds: 0,
       timer: "00:00:00",
+      InputType: 0
     });
   }
 
   render() {
-    /*
-    const history = this.state.history;
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
-      return (
-        <li key={move}>
-          <button onPress={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
-    */
-
     const current = this.state.current;
 
     return (
@@ -604,14 +623,26 @@ class Game extends React.Component {
         //onContextMenu={(e) => e.preventDefault()}
         onTouchEnd={() => this.appendHistory()}
       >
-        <CustomModal modalVisible={this.winCheck()} redirectPage='Home' navigation={this.props.navigation} modalText='Você Ganhou!' confirmText='Voltar a Home' />
-        <TouchableOpacity 
-          style={{ marginRight: 20,
+        <CustomModal
+          modalVisible={this.winCheck()}
+          redirectPage='Home'
+          navigation={this.props.navigation}
+          modalText={
+            this.state.dimensions.rows + 'x' + this.state.dimensions.cols +
+            '\n' + this.state.timer
+          }
+          confirmText='Continue!'
+          title='Amazing'
+        />
+        <TouchableOpacity
+          style={{
+            marginRight: 20,
             color: 'white',
             position: 'absolute',
             top: 30,
-            left: 10}}
-        onPress={() => this.props.navigation.navigate('Home')}>
+            left: 10
+          }}
+          onPress={() => this.props.navigation.navigate('Home')}>
           <Feather name="arrow-left" size={30} color="white" />
         </TouchableOpacity>
         <View style={styles.gameInfo}>
@@ -628,7 +659,7 @@ class Game extends React.Component {
               type='col'
             />
           </View>
-          <View style={{display: 'flex', flexDirection: 'row'}} className="lower-board">
+          <View style={{ display: 'flex', flexDirection: 'row' }} className="lower-board">
             <HintNumbers
               currentHints={this.state.currentHints.rows}
               goalHints={this.state.goalHints.rows}
@@ -643,21 +674,37 @@ class Game extends React.Component {
               onTouchMove={loc => this.squareHover(loc)}
             />
           </View>
-          <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 10}}>
-            <TouchableOpacity style={{margin: 20}} title='undo' onPress={() => this.undoAction()}>
+          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+            <TouchableOpacity style={{ margin: 20 }} title='undo' onPress={() => this.undoAction()}>
               <Feather name="corner-up-left" size={40} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={{margin: 20}} title='redo' onPress={() => this.redoAction()}>
+            <TouchableOpacity style={{ margin: 20 }} title='redo' onPress={() => this.redoAction()}>
               <Feather name="corner-up-right" size={40} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity style={{margin: 20}} title='replay' onPress={() => this.restart()}>
+            <TouchableOpacity style={{ margin: 20 }} title='replay' onPress={() => this.restart()}>
               <Feather name="repeat" size={40} color="white" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+            <TouchableOpacity title='undo' 
+            onPress={() =>
+              { 
+                this.setState({
+                  InputType: this.state.InputType == 0 ? 1 : 0
+                })
+              }}>
+                {
+                  this.state.InputType == 0 
+                  ? <Feather name="square" size={40} color="white" />
+                  : <Feather name="x" size={40} color="white" /> 
+                }              
             </TouchableOpacity>
           </View>
 
           {/* <View>
           <DimensionChoices />
           </View> */}
+          
         </View>
       </View>
     );

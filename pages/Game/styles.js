@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   game: {
     backgroundColor: '#282c34',
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height +40,
     width: Dimensions.get('window').width,
     display: 'flex',
     flexDirection: 'row',
@@ -82,8 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   squareMarked: {
-    backgroundColor: '#ccc',
-    color: '#f44336',
+    backgroundColor: '#f44336',
   },
 })
 
